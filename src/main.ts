@@ -68,4 +68,29 @@ c(`Signature verified for data 2: ${verifiedData2}`);
 
 c(`Fields in signature: ${signature.toFields().length}`);
 
+class Point extends Struct({ x: Field, y: Field }) {
+  static add(a: Point, b: Point) {
+    return { x: a.x.add(b.x), y: a.y.add(b.y) };
+  }
+}
+
+const point1 = { x: Field(10), y: Field(4) };
+const point2 = { x: Field(1), y: Field(2) };
+
+const pointSum = Point.add(point1, point2);
+
+c(`pointSum Fields: ${Point.toFields(pointSum)}`);
+
+class Points8 extends Struct({
+  points: [Point, Point, Point, Point, Point, Point, Point, Point],
+}) {}
+
+const points = new Array(8)
+  .fill(null)
+  .map((_, i) => ({ x: Field(i), y: Field(i * 10) }));
+
+const points8: Points8 = { points };
+
+c(`points8 JSON: ${JSON.stringify(points8)}`);
+
 await shutdown();
